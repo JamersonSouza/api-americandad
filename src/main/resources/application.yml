@@ -1,3 +1,5 @@
+jwt:
+  secret: 'pu$Zl7A%pZ{>J^5&tW{9nGQYx;[$Iwh!'
 server:
   port: 8081
 
