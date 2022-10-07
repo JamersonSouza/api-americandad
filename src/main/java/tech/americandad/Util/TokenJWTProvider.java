@@ -13,6 +13,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.stereotype.Component;
+
 import com.auth0.jwt.JWT;
 import org.apache.commons.lang3.StringUtils;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -21,6 +23,7 @@ import com.auth0.jwt.interfaces.JWTVerifier;
 import tech.americandad.constants.SecurityConstant;
 import tech.americandad.domain.UserPrincipal;
 
+@Component
 public class TokenJWTProvider {
 
     @Value("${jwt.secret}")
