@@ -10,12 +10,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.Http403ForbiddenEntryPoint;
+import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import tech.americandad.constants.SecurityConstant;
 import tech.americandad.domain.HttpResponse;
 
+@Component
 public class JwtAuthenticationEntryPoint extends Http403ForbiddenEntryPoint{
 
     @Override
