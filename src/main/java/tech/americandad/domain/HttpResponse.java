@@ -1,9 +1,15 @@
 package tech.americandad.domain;
 
+import java.util.Date;
+
 import org.springframework.http.HttpStatus;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 public class HttpResponse {
 
+    @JsonFormat(shape =  JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy hh:mm:ss", timezone = "America/Recife")
+    private Date timeStamp;
     private int httpStatusCode;
     private HttpStatus httpStatus;
     private String descReason;
@@ -13,6 +19,7 @@ public class HttpResponse {
     
     
     public HttpResponse(int httpStatusCode, HttpStatus httpStatus, String descReason, String message) {
+        this.timeStamp = new Date();
         this.httpStatusCode = httpStatusCode;
         this.httpStatus = httpStatus;
         this.descReason = descReason;
@@ -42,6 +49,16 @@ public class HttpResponse {
     }
     public void setMessage(String message) {
         this.message = message;
+    }
+
+
+    public Date getTimeStamp() {
+        return timeStamp;
+    }
+
+
+    public void setTimeStamp(Date timeStamp) {
+        this.timeStamp = timeStamp;
     }
 
     
