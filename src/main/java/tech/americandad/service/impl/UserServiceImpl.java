@@ -20,7 +20,7 @@ import tech.americandad.service.UserService;
 
 @Service
 @Transactional
-@Qualifier("UserDetailsService")
+@Qualifier("userDetailsService")
 public class UserServiceImpl  implements UserService, UserDetailsService{
 
     private Logger LOG = LoggerFactory.getLogger(getClass());
