@@ -1,9 +1,12 @@
 package tech.americandad.service.impl;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.transaction.Transactional;
 
+import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,10 +14,16 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import tech.americandad.Enums.Role;
 import tech.americandad.domain.User;
 import tech.americandad.domain.UserPrincipal;
+import tech.americandad.exceptions.domain.EmailExistsException;
+import tech.americandad.exceptions.domain.UsuarioExistsException;
+import tech.americandad.exceptions.domain.UsuarioNotFoundException;
 import tech.americandad.repository.UserRepository;
 import tech.americandad.service.UserService;
 
@@ -27,9 +36,12 @@ public class UserServiceImpl  implements UserService, UserDetailsService{
 
     private UserRepository userRepository;
 
+    private BCryptPasswordEncoder passwordEncoder;
+
     @Autowired
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
 
@@ -53,6 +65,114 @@ public class UserServiceImpl  implements UserService, UserDetailsService{
         }
 
        
+    }
+
+
+    //método que inseri um usuário no banco de dados
+    @Override
+    public User registro(String nome, String sobrenome, String usuario, String email) throws EmailExistsException, UsuarioExistsException, UsuarioNotFoundException {
+        validaNovoUsuarioAndEmail(StringUtils.EMPTY, usuario, email);
+        User user = new User();
+        user.setUserId(generateUserId());
+        String password = generatePassword();
+        String encodePassword = encodePassword(password);
+        user.setNome(nome);
+        user.setSobrenome(sobrenome);
+        user.setUsuario(usuario);
+        user.setEmail(email);
+        user.setDataRegistro(new Date());
+        user.setSenha(encodePassword);
+        user.setAtivo(true);
+        user.setDesbloqueado(true);
+        user.setRole(Role.ROLE_USER.name());
+        user.setAuthorities(Role.ROLE_USER.getAuthorities());
+        user.setImagemPerfilUrl(getImagemTemporariaProfileUrl());
+        userRepository.save(user);
+        LOG.info("Novo Usuario com senha: " + password);
+        return user;
+    }
+
+
+    //método que pega a url atual + concatenação com o diretorio da img
+    private String getImagemTemporariaProfileUrl() {
+        return ServletUriComponentsBuilder.fromCurrentContextPath().path("/users/image/profile/temp").toUriString();
+    }
+
+
+    //método de encoder da senha
+    private String encodePassword(String password) {
+        return passwordEncoder.encode(password);
+    }
+
+
+    //método que gera a senha
+    private String generatePassword() {
+        return RandomStringUtils.randomAlphanumeric(10);
+    }
+
+
+    //método gerador de IDUsuario
+    private String generateUserId() {
+        return RandomStringUtils.randomNumeric(10);
+    }
+
+
+    
+    private User validaNovoUsuarioAndEmail(String usuarioAtual, String novoUsuario, String novoEmail) throws EmailExistsException, UsuarioExistsException, UsuarioNotFoundException {
+        if(StringUtils.isNotBlank(usuarioAtual)){
+            User userAtual = findUserByUsuario(usuarioAtual);
+            if(userAtual == null){
+                throw new UsuarioNotFoundException("Nenhum Usuario Encontrado");
+            }
+            User userByNomeUsuario = findUserByUsuario(novoUsuario);
+            if(userByNomeUsuario != null && !userAtual.getId().equals(userByNomeUsuario.getId())){
+                throw new UsuarioExistsException("Usuário já cadastrado");
+            }
+
+            User userByEmail = findUserByEmail(novoEmail);
+            if(userByEmail != null && !userAtual.getId().equals(userByEmail.getId())){
+                throw new EmailExistsException("E-mail já cadastrado");
+            }
+
+            return userAtual;
+
+        }else {
+            User userByNomeUsuario = findUserByUsuario(novoUsuario);
+            if(userByNomeUsuario != null){
+                throw new UsuarioExistsException("Usuário já cadastrado");
+            }
+
+            User userByEmail = findUserByEmail(novoEmail);
+            if(userByEmail != null){
+                throw new EmailExistsException("E-mail já cadastrado");
+            }
+
+            return null;
+        }
+    }
+
+
+
+    @Override
+    public List<User> listUsers() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+
+
+    @Override
+    public User findUserByUsuario(String usuario) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+
+
+    @Override
+    public User findUserByEmail(String email) {
+        // TODO Auto-generated method stub
+        return null;
     }
     
 }
