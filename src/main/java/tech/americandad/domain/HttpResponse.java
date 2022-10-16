@@ -14,8 +14,6 @@ public class HttpResponse {
     private HttpStatus httpStatus;
     private String descReason;
     private String message;
-
-    public HttpResponse() {}
     
     
     public HttpResponse(int httpStatusCode, HttpStatus httpStatus, String descReason, String message) {
