@@ -26,7 +26,7 @@ public class User implements Serializable{
     private Date registroLogin;
     private Date mostrarRegistroLogin;
     private Date dataRegistro;
-    private String[] roles;//Funções User{leitura e edição} / Admin {delete}
+    private String role;//Funções User{leitura e edição} / Admin {delete}
     private String[] authorities;
     private boolean isAtivo;
     private boolean isDesbloqueado;
@@ -39,7 +39,7 @@ public class User implements Serializable{
     
 
     public User(Long id, String userId, String nome, String sobrenome, String usuario, String senha, String email,
-            String imagemPerfilUrl, Date registroLogin, Date mostrarRegistroLogin, Date dataRegistro, String[] roles,
+            String imagemPerfilUrl, Date registroLogin, Date mostrarRegistroLogin, Date dataRegistro, String role,
             String[] authorities, boolean isAtivo, boolean isDesbloqueado) {
         this.id = id;
         this.userId = userId;
@@ -52,7 +52,7 @@ public class User implements Serializable{
         this.registroLogin = registroLogin;
         this.mostrarRegistroLogin = mostrarRegistroLogin;
         this.dataRegistro = dataRegistro;
-        this.roles = roles;
+        this.role = role;
         this.authorities = authorities;
         this.isAtivo = isAtivo;
         this.isDesbloqueado = isDesbloqueado;
@@ -126,12 +126,7 @@ public class User implements Serializable{
     public void setDataRegistro(Date dataRegistro) {
         this.dataRegistro = dataRegistro;
     }
-    public String[] getRoles() {
-        return roles;
-    }
-    public void setRoles(String[] roles) {
-        this.roles = roles;
-    }
+
     public String[] getAuthorities() {
         return authorities;
     }
@@ -151,6 +146,14 @@ public class User implements Serializable{
 
     public void setDesbloqueado(boolean isDesbloqueado) {
         this.isDesbloqueado = isDesbloqueado;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
    
 
