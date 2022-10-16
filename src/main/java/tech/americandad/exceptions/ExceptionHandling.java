@@ -5,6 +5,7 @@ import java.nio.file.AccessDeniedException;
 
 import org.slf4j.Logger;
 import tech.americandad.exceptions.domain.*;
+
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -15,6 +16,7 @@ import org.springframework.security.authentication.LockedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
 import java.util.Objects;
 
 import javax.persistence.NoResultException;
@@ -24,7 +26,7 @@ import com.auth0.jwt.exceptions.TokenExpiredException;
 import tech.americandad.domain.HttpResponse;
 
 @RestControllerAdvice
-public class ExceptionHandling {
+public class ExceptionHandling{
 
     private final Logger LOG = LoggerFactory.getLogger(getClass());
 
@@ -35,7 +37,7 @@ public class ExceptionHandling {
     private static final String CONTA_DESATIVADA = "Sua conta foi desativada. Se isso for um erro, entre em contato com a administração";
     private static final String ERROR_PROCESSAR_ARQUIVO = "Ocorreu um erro durante o processamento do arquivo";
     private static final String PERMISSAO_NAO_SUFICIENTE = "Você não tem permissão suficiente para esta ação";
-    public static final String ERROR_PATH = "/error";
+    //public static final String ERROR_PATH = "/error";
 
 
     @ExceptionHandler(DisabledException.class)
@@ -89,6 +91,12 @@ public class ExceptionHandling {
         return createHttpResponse(HttpStatus.METHOD_NOT_ALLOWED, String.format(METODO_NAO_PERMITIDO, supportedMethod));
     }
 
+    // @ExceptionHandler(NoHandlerFoundException.class)
+    // public ResponseEntity<HttpResponse> noHandlerFoundEx(NoHandlerFoundException e) {
+    //     return createHttpResponse(HttpStatus.BAD_REQUEST, "A página não existe.");
+    // }
+
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<HttpResponse> internalServerErrorException(Exception exception) {
         LOG.error(exception.getMessage());
@@ -121,5 +129,5 @@ public class ExceptionHandling {
             */
 
     }
-    
+
 }

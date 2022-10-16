@@ -12,7 +12,9 @@ public class SecurityConstant {
     public static final String FORBIDDEN_MESSAGE = "Você precisa estar logado para acessar essa página";
     public static final String ACESSO_NEGADO_MESSAGE = "Você não tem permissão de acesso";
     public static final String OPTIONAL_HTTP_METHOD = "Opcional";
-    public static final String[] URLS_PUBLICA = {"/user/login", "user/cadastro", "/user/resetpassword/**", 
+    
+    public static final String[] URLS_PUBLICA = {"/user/login", "/user/registro", "/user/resetpassword/**", 
     "/user/images/**"};
+    // testes | public static final String[] URLS_PUBLICA = {"**"};
 
 }
