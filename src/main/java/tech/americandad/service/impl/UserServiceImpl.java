@@ -119,17 +119,20 @@ public class UserServiceImpl  implements UserService, UserDetailsService{
 
     
     private User validaNovoUsuarioAndEmail(String usuarioAtual, String novoUsuario, String novoEmail) throws EmailExistsException, UsuarioExistsException, UsuarioNotFoundException {
+       
+        User userByNomeUsuario = findUserByUsuario(novoUsuario);
+        User userByEmail = findUserByEmail(novoEmail);
+
         if(StringUtils.isNotBlank(usuarioAtual)){
             User userAtual = findUserByUsuario(usuarioAtual);
             if(userAtual == null){
                 throw new UsuarioNotFoundException("Nenhum Usuario Encontrado");
             }
-            User userByNomeUsuario = findUserByUsuario(novoUsuario);
+            
             if(userByNomeUsuario != null && !userAtual.getId().equals(userByNomeUsuario.getId())){
                 throw new UsuarioExistsException("Usuário já cadastrado");
             }
-
-            User userByEmail = findUserByEmail(novoEmail);
+         
             if(userByEmail != null && !userAtual.getId().equals(userByEmail.getId())){
                 throw new EmailExistsException("E-mail já cadastrado");
             }
@@ -137,12 +140,11 @@ public class UserServiceImpl  implements UserService, UserDetailsService{
             return userAtual;
 
         }else {
-            User userByNomeUsuario = findUserByUsuario(novoUsuario);
+           
             if(userByNomeUsuario != null){
                 throw new UsuarioExistsException("Usuário já cadastrado");
             }
 
-            User userByEmail = findUserByEmail(novoEmail);
             if(userByEmail != null){
                 throw new EmailExistsException("E-mail já cadastrado");
             }
@@ -155,24 +157,17 @@ public class UserServiceImpl  implements UserService, UserDetailsService{
 
     @Override
     public List<User> listUsers() {
-        // TODO Auto-generated method stub
-        return null;
+        return userRepository.findAll();
     }
-
-
 
     @Override
     public User findUserByUsuario(String usuario) {
-        // TODO Auto-generated method stub
-        return null;
+        return userRepository.findUserByUsuario(usuario);
     }
-
-
 
     @Override
     public User findUserByEmail(String email) {
-        // TODO Auto-generated method stub
-        return null;
+        return userRepository.findUserByEmail(email);
     }
     
 }
