@@ -25,6 +25,7 @@ import tech.americandad.exceptions.domain.EmailExistsException;
 import tech.americandad.exceptions.domain.UsuarioExistsException;
 import tech.americandad.exceptions.domain.UsuarioNotFoundException;
 import tech.americandad.repository.UserRepository;
+import tech.americandad.service.LoginTentativaService;
 import tech.americandad.service.UserService;
 
 @Service
@@ -38,10 +39,13 @@ public class UserServiceImpl  implements UserService, UserDetailsService{
 
     private BCryptPasswordEncoder passwordEncoder;
 
+    private LoginTentativaService loginTentativaService;
+
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder) {
+    public UserServiceImpl(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder, LoginTentativaService loginTentativaService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.loginTentativaService = loginTentativaService;
     }
 
 
@@ -55,6 +59,7 @@ public class UserServiceImpl  implements UserService, UserDetailsService{
             LOG.error("Usuário " + username + " não encontrado. Tente novamente");
            throw new UsernameNotFoundException("Usuário " + username + " não encontrado. Tente novamente");
         }else {
+            validaTentativaLogin(user);
             user.setMostrarRegistroLogin(user.getMostrarRegistroLogin());
             user.setRegistroLogin(new Date());
             userRepository.save(user);
@@ -66,6 +71,22 @@ public class UserServiceImpl  implements UserService, UserDetailsService{
 
        
     }
+
+
+
+    private void validaTentativaLogin(User user) {
+        if(user.isDesbloqueado()){
+            //se o usuário ultrapassar o numero de tentativas tera a conta bloqueada
+            if(loginTentativaService.ultrassouNumeroTentativas(user.getUsuario())){
+                user.setDesbloqueado(false);
+            }else{
+                user.setDesbloqueado(true);
+            }
+        }else{
+            loginTentativaService.removerUserLoginTentativaCache(user.getUsuario());
+        }
+    }
+
 
 
     //método que inseri um usuário no banco de dados
