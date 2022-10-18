@@ -36,19 +36,30 @@ public class LoginTentativaService {
         loginTentativasCache.invalidate(username);
     }
     //método que add  tentativa de login do usuário do cache
-    public void addUserLoginTentativaCache(String username) throws ExecutionException{
+    public void addUserLoginTentativaCache(String username){
         int tentativa = 0;
+     
+        try{    
         tentativa = TENTATIVAS_INCREMENT + loginTentativasCache.get(username);
+
+        }
+
+        catch(ExecutionException e){
+            e.printStackTrace();
+        }
+        
         loginTentativasCache.put(username, tentativa);
     
 
     }
-
-    public boolean ultrassouNumeroTentativas(String username) throws ExecutionException{
-
+    //método verifica se o usuario ultrassou o numero de tentativas
+    public boolean ultrassouNumeroTentativas(String username){
+        try{
         return loginTentativasCache.get(username) >= NUM_MAX_TENTATIVAS;
-
-
+        }catch(ExecutionException e){
+            e.printStackTrace();
+        }
+        return false;
     }
     
 }
