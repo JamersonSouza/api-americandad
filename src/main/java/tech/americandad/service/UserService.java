@@ -2,6 +2,8 @@ package tech.americandad.service;
 
 import java.util.List;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import tech.americandad.domain.User;
 import tech.americandad.exceptions.domain.EmailExistsException;
 import tech.americandad.exceptions.domain.UsuarioExistsException;
@@ -16,5 +18,14 @@ public interface UserService {
     User findUserByUsuario(String usuario);
 
     User findUserByEmail(String email);
+
+    User addNovoUsuario(String nome, String sobrenome, String usuario, String email, String role, boolean isDesbloqueado, boolean isAtivo, MultipartFile imagemPerfil) throws EmailExistsException, UsuarioExistsException, UsuarioNotFoundException;
+
+    User updateUsuario(String usuarioAtual, String novoNome, String novoSobrenome, String novoUsuario, String novoEmail, String role, boolean isDesbloqueado, boolean isAtivo, MultipartFile imagemPerfil);
     
+    void deletaUsuario(Long id);
+
+    void resetPassword(String email);
+
+    User updateImagemPerfil(String usuario, MultipartFile imagemPerfil) ;
 }
