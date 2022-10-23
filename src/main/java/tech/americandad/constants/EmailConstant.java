@@ -4,8 +4,8 @@ public class EmailConstant {
 
     public static final String SIMPLE_MAIL_TRANSFER_PROTOCOL = "smtps";
     public static final String USUARIO = "americandademailteste@gmail.com";
-    public static final String PASSWORD = "dc@S4M$bSdH$";
-    public static final String FROM_EMAIL = "contato@jovemapostador.com.br";
+    public static final String PASSWORD = "dcas2SdH$";
+    public static final String FROM_EMAIL = "test@gmail.com";
     public static final String CC_EMAIL = "";
     public static final String EMAIL_ASSUNTO = "Curso Spring Boot API com Angular";
     public static final String GMAIL_SMTP_SERVER = "smtp.gmail.com";
