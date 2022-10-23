@@ -17,9 +17,13 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import static org.apache.commons.lang3.StringUtils.EMPTY;
+
 import tech.americandad.Enums.Role;
+import tech.americandad.constants.FileConstants;
 import tech.americandad.domain.User;
 import tech.americandad.domain.UserPrincipal;
 import tech.americandad.exceptions.domain.EmailExistsException;
@@ -113,7 +117,7 @@ public class UserServiceImpl  implements UserService, UserDetailsService{
         user.setDesbloqueado(true);
         user.setRole(Role.ROLE_USER.name());
         user.setAuthorities(Role.ROLE_USER.getAuthorities());
-        user.setImagemPerfilUrl(getImagemTemporariaProfileUrl());
+        user.setImagemPerfilUrl(getImagemTemporariaProfileUrl(usuario));
         userRepository.save(user);
         LOG.info("Novo Usuario com senha: " + password);
         emailService.envioPasswordEmail(nome, password, email);
@@ -122,8 +126,8 @@ public class UserServiceImpl  implements UserService, UserDetailsService{
 
 
     //método que pega a url atual + concatenação com o diretorio da img
-    private String getImagemTemporariaProfileUrl() {
-        return ServletUriComponentsBuilder.fromCurrentContextPath().path("/users/image/profile/temp").toUriString();
+    private String getImagemTemporariaProfileUrl(String usuario) {
+        return ServletUriComponentsBuilder.fromCurrentContextPath().path(FileConstants.DEFAULT_USER_IMAGE_PATH + usuario).toUriString();
     }
 
 
@@ -196,6 +200,82 @@ public class UserServiceImpl  implements UserService, UserDetailsService{
     @Override
     public User findUserByEmail(String email) {
         return userRepository.findUserByEmail(email);
+    }
+
+
+
+
+
+    @Override
+    public User addNovoUsuario(String nome, String sobrenome, String usuario, String email, String role,
+            boolean isDesbloqueado, boolean isAtivo, MultipartFile imagemPerfil) throws EmailExistsException, UsuarioExistsException, UsuarioNotFoundException {
+        
+        validaNovoUsuarioAndEmail(EMPTY, usuario, email);
+        User user = new User();
+        String password = generatePassword();
+        String encodePassword = encodePassword(password);
+        user.setUserId(generateUserId());
+        user.setNome(nome);
+        user.setSobrenome(sobrenome);
+        user.setUsuario(usuario);
+        user.setEmail(email);
+        user.setDataRegistro(new Date());
+        user.setSenha(encodePassword);
+        user.setAtivo(true);
+        user.setDesbloqueado(true);
+        user.setRole(getRoleEnumNome(role).name());
+        user.setAuthorities(getRoleEnumNome(role).getAuthorities());
+        user.setImagemPerfilUrl(getImagemTemporariaProfileUrl(usuario));
+        userRepository.save(user);
+        saveImagemPerfil(user, imagemPerfil);
+        return user;
+    }
+
+
+
+    
+
+
+    private void saveImagemPerfil(User user, MultipartFile imagemPerfil) {
+    }
+
+
+
+    private Role getRoleEnumNome(String role) {
+        return null;
+    }
+
+
+
+    @Override
+    public User updateUsuario(String usuarioAtual, String novoNome, String novoSobrenome, String novoUsuario,
+            String novoEmail, String role, boolean isDesbloqueado, boolean isAtivo, MultipartFile imagemPerfil) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+
+
+    @Override
+    public void deletaUsuario(Long id) {
+        // TODO Auto-generated method stub
+        
+    }
+
+
+
+    @Override
+    public void resetPassword(String email) {
+        // TODO Auto-generated method stub
+        
+    }
+
+
+
+    @Override
+    public User updateImagemPerfil(String usuario, MultipartFile imagemPerfil) {
+        // TODO Auto-generated method stub
+        return null;
     }
     
 }
