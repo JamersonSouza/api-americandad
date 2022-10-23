@@ -2,6 +2,7 @@ package tech.americandad.service.impl;
 
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import javax.transaction.Transactional;
 
@@ -25,6 +26,7 @@ import tech.americandad.exceptions.domain.EmailExistsException;
 import tech.americandad.exceptions.domain.UsuarioExistsException;
 import tech.americandad.exceptions.domain.UsuarioNotFoundException;
 import tech.americandad.repository.UserRepository;
+import tech.americandad.service.EmailService;
 import tech.americandad.service.LoginTentativaService;
 import tech.americandad.service.UserService;
 
@@ -41,11 +43,15 @@ public class UserServiceImpl  implements UserService, UserDetailsService{
 
     private LoginTentativaService loginTentativaService;
 
+    private EmailService emailService;
+
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder, LoginTentativaService loginTentativaService) {
+    public UserServiceImpl(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder, LoginTentativaService loginTentativaService,
+    EmailService emailService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.loginTentativaService = loginTentativaService;
+        this.emailService = emailService;
     }
 
 
@@ -110,6 +116,7 @@ public class UserServiceImpl  implements UserService, UserDetailsService{
         user.setImagemPerfilUrl(getImagemTemporariaProfileUrl());
         userRepository.save(user);
         LOG.info("Novo Usuario com senha: " + password);
+        emailService.envioPasswordEmail(nome, password, email);
         return user;
     }
 
