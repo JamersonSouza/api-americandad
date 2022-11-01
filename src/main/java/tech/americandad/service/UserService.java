@@ -6,6 +6,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import tech.americandad.domain.User;
 import tech.americandad.exceptions.domain.EmailExistsException;
+import tech.americandad.exceptions.domain.EmailNotFoundException;
 import tech.americandad.exceptions.domain.UsuarioExistsException;
 import tech.americandad.exceptions.domain.UsuarioNotFoundException;
 
@@ -25,7 +26,7 @@ public interface UserService {
     
     void deletaUsuario(Long id);
 
-    void resetPassword(String email);
+    void resetPassword(String email) throws EmailNotFoundException;
 
     User updateImagemPerfil(String usuario, MultipartFile imagemPerfil) ;
 }

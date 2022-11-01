@@ -23,10 +23,13 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 import tech.americandad.Enums.Role;
+import tech.americandad.constants.EmailConstant;
 import tech.americandad.constants.FileConstants;
+import tech.americandad.constants.UserImpConstants;
 import tech.americandad.domain.User;
 import tech.americandad.domain.UserPrincipal;
 import tech.americandad.exceptions.domain.EmailExistsException;
+import tech.americandad.exceptions.domain.EmailNotFoundException;
 import tech.americandad.exceptions.domain.UsuarioExistsException;
 import tech.americandad.exceptions.domain.UsuarioNotFoundException;
 import tech.americandad.repository.UserRepository;
@@ -263,8 +266,16 @@ public class UserServiceImpl  implements UserService, UserDetailsService{
 
 
     @Override
-    public void resetPassword(String email) {
-        // TODO Auto-generated method stub
+    public void resetPassword(String email) throws EmailNotFoundException  {
+        User user = userRepository.findUserByEmail(email);
+        if(user  == null) {
+            throw new EmailNotFoundException( UserImpConstants.NO_USER_FOUND_BY_EMAIL  + email);
+            
+        }
+        String senha = generatePassword();
+        user.setSenha(encodePassword(senha));
+        userRepository.save(user);
+        emailService.envioPasswordEmail(user.getNome(), senha, user.getEmail());
         
     }
 
