@@ -1,5 +1,6 @@
 package tech.americandad.service;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
@@ -20,13 +21,13 @@ public interface UserService {
 
     User findUserByEmail(String email);
 
-    User addNovoUsuario(String nome, String sobrenome, String usuario, String email, String role, boolean isDesbloqueado, boolean isAtivo, MultipartFile imagemPerfil) throws EmailExistsException, UsuarioExistsException, UsuarioNotFoundException;
+    User addNovoUsuario(String nome, String sobrenome, String usuario, String email, String role, boolean isDesbloqueado, boolean isAtivo, MultipartFile imagemPerfil) throws EmailExistsException, UsuarioExistsException, UsuarioNotFoundException, IOException;
 
-    User updateUsuario(String usuarioAtual, String novoNome, String novoSobrenome, String novoUsuario, String novoEmail, String role, boolean isDesbloqueado, boolean isAtivo, MultipartFile imagemPerfil) throws EmailExistsException, UsuarioExistsException, UsuarioNotFoundException;
+    User updateUsuario(String usuarioAtual, String novoNome, String novoSobrenome, String novoUsuario, String novoEmail, String role, boolean isDesbloqueado, boolean isAtivo, MultipartFile imagemPerfil) throws EmailExistsException, UsuarioExistsException, UsuarioNotFoundException, IOException;
     
     void deletaUsuario(Long id);
 
     void resetPassword(String email) throws EmailNotFoundException;
 
-    User updateImagemPerfil(String usuario, MultipartFile imagemPerfil) throws EmailExistsException, UsuarioExistsException, UsuarioNotFoundException;
+    User updateImagemPerfil(String usuario, MultipartFile imagemPerfil) throws EmailExistsException, UsuarioExistsException, UsuarioNotFoundException, IOException;
 }
