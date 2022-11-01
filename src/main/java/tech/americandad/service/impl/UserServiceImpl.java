@@ -282,9 +282,10 @@ public class UserServiceImpl  implements UserService, UserDetailsService{
 
 
     @Override
-    public User updateImagemPerfil(String usuario, MultipartFile imagemPerfil) {
-        // TODO Auto-generated method stub
-        return null;
+    public User updateImagemPerfil(String usuario, MultipartFile imagemPerfil) throws EmailExistsException, UsuarioExistsException, UsuarioNotFoundException {
+        User user = validaNovoUsuarioAndEmail(usuario, null, null);
+        saveImagemPerfil(user, imagemPerfil);
+        return user;
     }
 
     private void saveImagemPerfil(User user, MultipartFile imagemPerfil) {
