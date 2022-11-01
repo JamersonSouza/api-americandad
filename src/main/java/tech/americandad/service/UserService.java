@@ -21,7 +21,7 @@ public interface UserService {
 
     User addNovoUsuario(String nome, String sobrenome, String usuario, String email, String role, boolean isDesbloqueado, boolean isAtivo, MultipartFile imagemPerfil) throws EmailExistsException, UsuarioExistsException, UsuarioNotFoundException;
 
-    User updateUsuario(String usuarioAtual, String novoNome, String novoSobrenome, String novoUsuario, String novoEmail, String role, boolean isDesbloqueado, boolean isAtivo, MultipartFile imagemPerfil);
+    User updateUsuario(String usuarioAtual, String novoNome, String novoSobrenome, String novoUsuario, String novoEmail, String role, boolean isDesbloqueado, boolean isAtivo, MultipartFile imagemPerfil) throws EmailExistsException, UsuarioExistsException, UsuarioNotFoundException;
     
     void deletaUsuario(Long id);
 

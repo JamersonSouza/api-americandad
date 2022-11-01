@@ -233,25 +233,23 @@ public class UserServiceImpl  implements UserService, UserDetailsService{
 
 
 
-    
-
-
-    private void saveImagemPerfil(User user, MultipartFile imagemPerfil) {
-    }
-
-
-
-    private Role getRoleEnumNome(String role) {
-        return null;
-    }
 
 
 
     @Override
     public User updateUsuario(String usuarioAtual, String novoNome, String novoSobrenome, String novoUsuario,
-            String novoEmail, String role, boolean isDesbloqueado, boolean isAtivo, MultipartFile imagemPerfil) {
-        // TODO Auto-generated method stub
-        return null;
+            String novoEmail, String role, boolean isDesbloqueado, boolean isAtivo, MultipartFile imagemPerfil) throws EmailExistsException, UsuarioExistsException, UsuarioNotFoundException {
+               User userAtual =  validaNovoUsuarioAndEmail(usuarioAtual, novoNome, novoEmail);
+                userAtual.setNome(novoNome);
+                userAtual.setSobrenome(novoSobrenome);
+                userAtual.setUsuario(novoUsuario);
+                userAtual.setEmail(novoEmail);
+                userAtual.setAtivo(true);
+                userAtual.setDesbloqueado(true);
+                userAtual.setRole(getRoleEnumNome(role).name());
+                userRepository.save(userAtual);
+                saveImagemPerfil(userAtual, imagemPerfil);
+                return userAtual;
     }
 
 
@@ -275,6 +273,15 @@ public class UserServiceImpl  implements UserService, UserDetailsService{
     @Override
     public User updateImagemPerfil(String usuario, MultipartFile imagemPerfil) {
         // TODO Auto-generated method stub
+        return null;
+    }
+
+    private void saveImagemPerfil(User user, MultipartFile imagemPerfil) {
+    }
+
+
+
+    private Role getRoleEnumNome(String role) {
         return null;
     }
     
