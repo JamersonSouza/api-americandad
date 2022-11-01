@@ -256,7 +256,7 @@ public class UserServiceImpl  implements UserService, UserDetailsService{
 
     @Override
     public void deletaUsuario(Long id) {
-        // TODO Auto-generated method stub
+        userRepository.deleteById(id);
         
     }
 
