@@ -1,7 +1,12 @@
 package tech.americandad.service.impl;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Date;
 import java.util.List;
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 import java.util.concurrent.ExecutionException;
 
 import javax.transaction.Transactional;
@@ -211,7 +216,7 @@ public class UserServiceImpl  implements UserService, UserDetailsService{
 
     @Override
     public User addNovoUsuario(String nome, String sobrenome, String usuario, String email, String role,
-            boolean isDesbloqueado, boolean isAtivo, MultipartFile imagemPerfil) throws EmailExistsException, UsuarioExistsException, UsuarioNotFoundException {
+            boolean isDesbloqueado, boolean isAtivo, MultipartFile imagemPerfil) throws EmailExistsException, UsuarioExistsException, UsuarioNotFoundException, IOException {
         
         validaNovoUsuarioAndEmail(EMPTY, usuario, email);
         User user = new User();
@@ -241,7 +246,7 @@ public class UserServiceImpl  implements UserService, UserDetailsService{
 
     @Override
     public User updateUsuario(String usuarioAtual, String novoNome, String novoSobrenome, String novoUsuario,
-            String novoEmail, String role, boolean isDesbloqueado, boolean isAtivo, MultipartFile imagemPerfil) throws EmailExistsException, UsuarioExistsException, UsuarioNotFoundException {
+            String novoEmail, String role, boolean isDesbloqueado, boolean isAtivo, MultipartFile imagemPerfil) throws EmailExistsException, UsuarioExistsException, UsuarioNotFoundException, IOException {
                User userAtual =  validaNovoUsuarioAndEmail(usuarioAtual, novoNome, novoEmail);
                 userAtual.setNome(novoNome);
                 userAtual.setSobrenome(novoSobrenome);
@@ -282,19 +287,43 @@ public class UserServiceImpl  implements UserService, UserDetailsService{
 
 
     @Override
-    public User updateImagemPerfil(String usuario, MultipartFile imagemPerfil) throws EmailExistsException, UsuarioExistsException, UsuarioNotFoundException {
+    public User updateImagemPerfil(String usuario, MultipartFile imagemPerfil) throws EmailExistsException, UsuarioExistsException, UsuarioNotFoundException, IOException {
         User user = validaNovoUsuarioAndEmail(usuario, null, null);
         saveImagemPerfil(user, imagemPerfil);
         return user;
     }
 
-    private void saveImagemPerfil(User user, MultipartFile imagemPerfil) {
+    private void saveImagemPerfil(User user, MultipartFile imagemPerfil) throws IOException {
+
+        if(imagemPerfil != null){
+            Path userFolder = Paths.get(FileConstants.USER_FOLDER, user.getUsuario())
+            .toAbsolutePath().normalize();
+            if(Files.exists(userFolder)){
+                Files.createDirectories(userFolder);
+                LOG.info(FileConstants.DIRECTORY_CREATED);
+            }
+            Files.deleteIfExists(Paths.get(userFolder + user.getUsuario() + FileConstants.DOT + 
+            FileConstants.JPG_EXTENSION));
+
+            Files.copy(imagemPerfil.getInputStream(), userFolder.resolve(user.getUsuario() 
+            + FileConstants.DOT + 
+            FileConstants.JPG_EXTENSION), REPLACE_EXISTING);
+            user.setImagemPerfilUrl(setProfileImageUrl(user.getUsuario()));
+            userRepository.save(user);
+            LOG.info(FileConstants.FILE_SAVED_IN_FILE_SYSTEM);
+        }
+
     }
-
-
 
     private Role getRoleEnumNome(String role) {
-        return null;
+        return Role.valueOf(role.toUpperCase());
     }
+
+    private String setProfileImageUrl(String username) {
+        return ServletUriComponentsBuilder.fromCurrentContextPath().path(FileConstants.USER_IMAGE_PATH + username + FileConstants.FORWARD_SLASH
+        + username + FileConstants.DOT + 
+        FileConstants.JPG_EXTENSION).toUriString();
+    }
+
     
 }
