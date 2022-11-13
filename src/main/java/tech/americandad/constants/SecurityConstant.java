@@ -14,7 +14,7 @@ public class SecurityConstant {
     public static final String OPTIONAL_HTTP_METHOD = "Opcional";
     
     public static final String[] URLS_PUBLICA = {"/user/login", "/user/registro", "/user/resetpassword/**", 
-    "/user/images/**"};
+    "/user/imagem/**"};
     // testes | public static final String[] URLS_PUBLICA = {"**"};
 
 }

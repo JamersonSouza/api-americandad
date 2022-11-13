@@ -178,7 +178,7 @@ public class UserResource extends ExceptionHandling{
         return Files.readAllBytes(Paths.get(FileConstants.USER_FOLDER + usuario + FileConstants.FORWARD_SLASH + filename));
     }
 
-    @GetMapping(path = "/imagem/{perfil}/{usuario}", produces = MediaType.IMAGE_JPEG_VALUE)
+    @GetMapping(path = "/imagem/perfil/{usuario}", produces = MediaType.IMAGE_JPEG_VALUE)
     public byte[] getImagemPerfilTemporaria(@PathVariable("usuario") String usuario) throws IOException{
         URL url = new URL(FileConstants.TEMP_PROFILE_IMAGE_BASE_URL + usuario);
         ByteArrayOutputStream byteArrayOutputStream  = new ByteArrayOutputStream();
