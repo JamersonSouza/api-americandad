@@ -8,8 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,10 +23,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 import tech.americandad.Util.TokenJWTProvider;
 import tech.americandad.constants.SecurityConstant;
+import tech.americandad.domain.HttpResponse;
 import tech.americandad.domain.User;
 import tech.americandad.domain.UserPrincipal;
 import tech.americandad.exceptions.ExceptionHandling;
 import tech.americandad.exceptions.domain.EmailExistsException;
+import tech.americandad.exceptions.domain.EmailNotFoundException;
 import tech.americandad.exceptions.domain.UsuarioExistsException;
 import tech.americandad.exceptions.domain.UsuarioNotFoundException;
 import tech.americandad.service.UserService;
@@ -130,5 +134,26 @@ public class UserResource extends ExceptionHandling{
         List<User> user = userService.listUsers();
         return new ResponseEntity<>(user, HttpStatus.OK);
 
+    }
+
+     @GetMapping("/resetSenha/{email}")
+    public ResponseEntity<HttpResponse> resetSenhaUsuario(@PathVariable("email") String email) throws EmailNotFoundException{
+
+        userService.resetPassword(email);
+        return resposta(HttpStatus.OK , "E-mail enviado para: " + email);
+
+    }
+
+    @DeleteMapping("/delete/{id}")
+    @PreAuthorize("hasAnyAuthority('user:delete')")
+    public ResponseEntity<HttpResponse> deleteUser(@PathVariable("id") Long id){
+        userService.deletaUsuario(id);
+        return resposta(HttpStatus.OK, "Usuário Excluído com Sucesso!");
+
+    }
+
+    private ResponseEntity<HttpResponse> resposta(HttpStatus httpStatus, String message) {
+        return new ResponseEntity<>(new HttpResponse(httpStatus.value(), httpStatus, httpStatus.getReasonPhrase().toUpperCase(),
+        message), httpStatus);
     }
 }
