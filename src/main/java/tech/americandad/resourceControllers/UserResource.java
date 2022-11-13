@@ -156,4 +156,15 @@ public class UserResource extends ExceptionHandling{
         return new ResponseEntity<>(new HttpResponse(httpStatus.value(), httpStatus, httpStatus.getReasonPhrase().toUpperCase(),
         message), httpStatus);
     }
+
+    @PostMapping("atualizar-imagem-usuario")
+    public ResponseEntity<User> updateImagemUsuario(@RequestParam("usuario") String usuario, @RequestParam(value = "imagemPerfilUrl") MultipartFile imagemPerfilUrl) throws EmailExistsException, UsuarioExistsException, UsuarioNotFoundException, IOException{
+
+            User updateImagenUser = userService.updateImagemPerfil(usuario, imagemPerfilUrl);
+
+            return new ResponseEntity<>(updateImagenUser, HttpStatus.OK);
+
+
+
+    }
 }
