@@ -2,6 +2,7 @@ package tech.americandad.resourceControllers;
 
 
 import java.io.IOException;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -123,5 +124,11 @@ public class UserResource extends ExceptionHandling{
 
     }
 
-    
+    @GetMapping("/usuarios")
+    public ResponseEntity<List<User>> buscarUsuarios(){
+
+        List<User> user = userService.listUsers();
+        return new ResponseEntity<>(user, HttpStatus.OK);
+
+    }
 }
