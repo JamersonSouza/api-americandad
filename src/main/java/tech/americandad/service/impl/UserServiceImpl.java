@@ -310,7 +310,7 @@ public class UserServiceImpl  implements UserService, UserDetailsService{
             FileConstants.JPG_EXTENSION), REPLACE_EXISTING);
             user.setImagemPerfilUrl(setProfileImageUrl(user.getUsuario()));
             userRepository.save(user);
-            LOG.info(FileConstants.FILE_SAVED_IN_FILE_SYSTEM);
+            LOG.info(FileConstants.FILE_SAVED_IN_FILE_SYSTEM + imagemPerfil.getOriginalFilename());
         }
 
     }

@@ -1,6 +1,8 @@
 package tech.americandad.resourceControllers;
 
 
+import java.io.IOException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -80,13 +82,35 @@ public class UserResource extends ExceptionHandling{
                                             @RequestParam("usuario") String usuario,
                                             @RequestParam("email") String email,
                                             @RequestParam("role") String role,
-                                            @RequestParam("isAtivo") boolean isAtivo,
-                                            @RequestParam("isDesbloqueado") boolean isDesbloqueado,
-                                            @RequestParam(value = "imagemPerfilUrl", required = false) MultipartFile imagemPerfilUrl)
-                                            
-                                            {
+                                            @RequestParam("isAtivo") String isAtivo,
+                                            @RequestParam("isDesbloqueado") String isDesbloqueado,
+                                            @RequestParam(value = "imagemPerfilUrl", required = false) MultipartFile imagemPerfilUrl) throws EmailExistsException, UsuarioExistsException, UsuarioNotFoundException, IOException{
 
-                                                return null;
+            User newUser = userService.addNovoUsuario(nome, sobrenome, usuario, email, role, Boolean.parseBoolean(isDesbloqueado), Boolean.parseBoolean(isAtivo), imagemPerfilUrl);
+
+            return new ResponseEntity<>(newUser, HttpStatus.OK);
+
+
+
+    }
+
+    @PostMapping("atualizar-usuario")
+    public ResponseEntity<User> updateUsuario(@RequestParam("currentUsuario") String currentUsuario,
+                                            @RequestParam("nome") String nome,
+                                            @RequestParam("sobrenome") String sobrenome,
+                                            @RequestParam("usuario") String usuario,
+                                            @RequestParam("email") String email,
+                                            @RequestParam("role") String role,
+                                            @RequestParam("isAtivo") String isAtivo,
+                                            @RequestParam("isDesbloqueado") String isDesbloqueado,
+                                            @RequestParam(value = "imagemPerfilUrl", required = false) MultipartFile imagemPerfilUrl) throws EmailExistsException, UsuarioExistsException, UsuarioNotFoundException, IOException{
+
+            User newUser = userService.updateUsuario(currentUsuario, nome, sobrenome, usuario, email, role, Boolean.parseBoolean(isDesbloqueado), Boolean.parseBoolean(isAtivo), imagemPerfilUrl);
+
+            return new ResponseEntity<>(newUser, HttpStatus.OK);
+
+
+
     }
  
      
