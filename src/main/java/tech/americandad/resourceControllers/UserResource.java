@@ -1,7 +1,10 @@
 package tech.americandad.resourceControllers;
 
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
@@ -173,5 +176,19 @@ public class UserResource extends ExceptionHandling{
     @GetMapping(path = "/imagem/{usuario}/{filename}", produces = MediaType.IMAGE_JPEG_VALUE)
     public byte[] getImagemPerfil(@PathVariable("usuario") String usuario, @PathVariable("filename") String filename) throws IOException{
         return Files.readAllBytes(Paths.get(FileConstants.USER_FOLDER + usuario + FileConstants.FORWARD_SLASH + filename));
+    }
+
+    @GetMapping(path = "/imagem/{perfil}/{usuario}", produces = MediaType.IMAGE_JPEG_VALUE)
+    public byte[] getImagemPerfilTemporaria(@PathVariable("usuario") String usuario) throws IOException{
+        URL url = new URL(FileConstants.TEMP_PROFILE_IMAGE_BASE_URL + usuario);
+        ByteArrayOutputStream byteArrayOutputStream  = new ByteArrayOutputStream();
+        try (InputStream inputStream = url.openStream()){
+            int bytesLidos;
+            byte[] fragmento = new byte[1024];
+            while((bytesLidos = inputStream.read(fragmento)) > 0) {
+                byteArrayOutputStream.write(fragmento, 0, bytesLidos);
+            }
+        } 
+        return byteArrayOutputStream.toByteArray();
     }
 }
