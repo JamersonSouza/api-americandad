@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -105,15 +107,21 @@ public class UserResource extends ExceptionHandling{
                                             @RequestParam("isDesbloqueado") String isDesbloqueado,
                                             @RequestParam(value = "imagemPerfilUrl", required = false) MultipartFile imagemPerfilUrl) throws EmailExistsException, UsuarioExistsException, UsuarioNotFoundException, IOException{
 
-            User newUser = userService.updateUsuario(currentUsuario, nome, sobrenome, usuario, email, role, Boolean.parseBoolean(isDesbloqueado), Boolean.parseBoolean(isAtivo), imagemPerfilUrl);
+            User updateUser = userService.updateUsuario(currentUsuario, nome, sobrenome, usuario, email, role, Boolean.parseBoolean(isDesbloqueado), Boolean.parseBoolean(isAtivo), imagemPerfilUrl);
 
-            return new ResponseEntity<>(newUser, HttpStatus.OK);
+            return new ResponseEntity<>(updateUser, HttpStatus.OK);
 
 
 
     }
  
-     
+    @GetMapping("/buscar/{usuario}")
+    public ResponseEntity<User> buscarUsuario(@PathVariable("usuario") String usuario){
+
+        User user = userService.findUserByUsuario(usuario);
+        return new ResponseEntity<>(user, HttpStatus.OK);
+
+    }
 
     
 }
